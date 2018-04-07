@@ -1,0 +1,38 @@
+{
+  "name": "truffle-saved-migrations",
+  "version": "1.0.0",
+  "description": "Off-chain Solidity migrations and contract tracking for Truffle",
+  "main": "index.js",
+  "scripts": {
+    "main": "node index.js"
+  },
+  "bin": {
+    "truffle-saved-migrations": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asselstine/truffle-saved-migrations.git"
+  },
+  "keywords": [
+    "truffle",
+    "solidity",
+    "migrate"
+  ],
+  "author": "Brendan Asselstine",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asselstine/truffle-saved-migrations/issues"
+  },
+  "homepage": "https://github.com/asselstine/truffle-saved-migrations#readme",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "source-map-support": "^0.5.4",
+    "truffle-config": "^1.0.4",
+    "truffle-contract-schema": "^2.0.0",
+    "truffle-core": "^4.1.5",
+    "truffle-error": "0.0.2",
+    "truffle-expect": "0.0.3",
+    "truffle-resolver": "^4.0.2",
+    "truffle-workflow-compile": "^1.0.1"
+  }
+}
