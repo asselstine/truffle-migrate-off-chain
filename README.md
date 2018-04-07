@@ -74,3 +74,8 @@ Essentially, our new command can run Migrations with two changes:
 [ ] 1. Current migration version is determined from the value in the file `network/ropsten/version`
 [ ] 2. The artifactor writes to the network folder.
 [ ] 3. Truffle migrate --reset will simply delete the version file.
+
+# TODO:
+
+1. [-] Regular JSON files are no longer being generated.  Still call the old artifactor.
+2. [-] Old versions of cryptotrophies are still being thrown away
