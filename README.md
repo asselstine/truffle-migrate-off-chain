@@ -75,7 +75,58 @@ Essentially, our new command can run Migrations with two changes:
 [ ] 2. The artifactor writes to the network folder.
 [ ] 3. Truffle migrate --reset will simply delete the version file.
 
+### Front-end
+
+The front-end pulls in a generated JSON file (as now)
+
+### Problems with the current migration
+
+- Developers are developing locally, so the local address changes constantly in the JSON file.  The contract JSON file shouldn't be committed in it's current form.
+- The Migration contract stores which migrations on the network have been run, but we still need to know the address of the migration contract for this to be useful.  This implies we need to commit the Migration.json file for the Migration version contract to be useful.
+- A contract can be deployed multiple times on the same network.  The JSON file in its current form is simply storing the latest deployed address and version of the given contract.
+
+
+### Migration Algorithm
+
+1. Migration version is first checked to see what migrations need to run.
+2. Migrations are run, when new contracts are deployed they are added to the list of deployed contracts.
+3. The latest 'versions' of the contracts are combined into a JSON file.  This file is transient.
+
+### Ideal File Structure
+
+```
+/deployments/networks/1234.json
+/deployments/networks/3.json
+```
+
+Where `1234.json` and `3.json` are files structured like:
+
+```javascript
+{
+  migrationVersion: '1521830456',
+  contracts: [
+    {
+      contractName: 'CryptoTrophies',
+      address: '0xalskdf',
+      abi: '/* ... */',
+      bytecode: '...',
+      deployedBytecode: '...'
+    }
+  ]
+}
+```
+
+The same combined contracts would be updated with the latest versions of the CryptoTrophies contracts.
+
 # TODO:
 
 1. [-] Regular JSON files are no longer being generated.  Still call the old artifactor.
-2. [-] Old versions of cryptotrophies are still being thrown away
+2. [-] Old versions of contract abis are still being thrown away
+
+
+
+
+
+
+
+The front-end allows the dev to have the same contract deployed to any network.  The user can select the network, and the contract is able to determine which address the contract lives at.
