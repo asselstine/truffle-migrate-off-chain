@@ -1,132 +1,82 @@
-
 # Truffle Saved Migrations
 
-This migration command can replace Truffle's default migration behaviour.
+This library acts as a drop-in replacement for Truffle's `migrate` command.  It stores the migration version and deployed contract addresses for each network in the local filesystem.  This means that development networks can added to .gitignore, and production deployments can be committed: allowing easier integration with continuous deployment processes.
 
-Difference:
+# Setup
 
-- The migration version for a network is stored in the filesystem:
-`networks/<network_id>/version`
-- Contract addresses and ABIs are separated by network and stored in:
-`networks/<network_id>/<ContractName>.json`
-
-# Motivation
-
-## Differences between networks
-
-- Some networks are transient, such as localhost
-- Other networks are global, such as Ropsten.  We want these ABIs and addresses to be committed.
-
-## Permanence of contracts
-
-- When a contract is deployed, the previous one does not vanish.  The JSON file loses this information.
-
-## Separation of concerns
-
-- The JSON file includes both the ABI and the deployed contract address.  However, the same ABI can be
-deployed to different locations on the same network.  These concepts must be separated.
-
-## Retrieving contracts by name
-
-- We still want to be able to access the 'newest' version of a contract.  Contracts must be looked up by name.
-
-# Proposed Solution
-
-A solution will need to:
-
-- Store the ABI and contract locations separately
-- Separate deployments by network
-
-## Directory Structure
+Install the library in an existing Truffle project:
 
 ```
-networks/3/contracts/CryptoTrophies.json
-networks/3/version
-networks/1234/contracts/CryptoTrophies.json
+npm install --save-dev truffle-migrate-off-chain
 ```
+
+The `Migrations.sol` contract can be removed because it is no longer needed.
+
+# Usage
+
+To run your migrations call the command:
+
+```
+truffle-migrate-off-chain
+```
+
+If you have existing migrations then this command will behave like `migrate --reset`.
+
+# Options
+
+The command currently supports all Truffle options, including `--dry-run` and `--network` selection.
+
+# Migrating from `truffle migrate`
+
+If you're migrating from `truffle migrate` then you can preserve your deployed contracts by manually creating a network config.
+
+For example, to declare an existing set of contracts on the Ropsten network you could create the file `networks/3.json`:
 
 ```javascript
-// networks/ropsten/deploys/CryptoTrophies.json
+// networks/3.json
 
 {
-  contractName: 'CryptoTrophies',
-  networks: {
-    3: {
-      address: '0x38e7fefea8dfa7dfa8ef7a8ef7a8e7fa765d7fae54fad',
-    }
-  }
-  abi: [] /* abi here */
-}
-```
-
-However, we don't want to commit ABIs that aren't used.  Maybe just have some duplication and stick the ABI directly into the deployments.
-
-## Order of Operations
-
-### Deployment
-
-- When the deployer deploys new contracts, a copy of the above information is stored as per the pattern.
-- When the front-end wants to use the contract, it can pull in the correct version.
-- What happens when a contract needs a specific contract address?  Then set it in the constructor and the migration will set it on deploy.
-
-Essentially, our new command can run Migrations with two changes:
-
-[ ] 1. Current migration version is determined from the value in the file `network/ropsten/version`
-[ ] 2. The artifactor writes to the network folder.
-[ ] 3. Truffle migrate --reset will simply delete the version file.
-
-### Front-end
-
-The front-end pulls in a generated JSON file (as now)
-
-### Problems with the current migration
-
-- Developers are developing locally, so the local address changes constantly in the JSON file.  The contract JSON file shouldn't be committed in it's current form.
-- The Migration contract stores which migrations on the network have been run, but we still need to know the address of the migration contract for this to be useful.  This implies we need to commit the Migration.json file for the Migration version contract to be useful.
-- A contract can be deployed multiple times on the same network.  The JSON file in its current form is simply storing the latest deployed address and version of the given contract.
-
-
-### Migration Algorithm
-
-1. Migration version is first checked to see what migrations need to run.
-2. Migrations are run, when new contracts are deployed they are added to the list of deployed contracts.
-3. The latest 'versions' of the contracts are combined into a JSON file.  This file is transient.
-
-### Ideal File Structure
-
-```
-/deployments/networks/1234.json
-/deployments/networks/3.json
-```
-
-Where `1234.json` and `3.json` are files structured like:
-
-```javascript
-{
-  migrationVersion: '1521830456',
+  migrationVersion: 123512351235, // latest migration version
   contracts: [
     {
-      contractName: 'CryptoTrophies',
-      address: '0xalskdf',
-      abi: '/* ... */',
-      bytecode: '...',
-      deployedBytecode: '...'
+      contractName: 'CryptoDoggies',
+      address: '0x...' // address of contract on network
     }
   ]
 }
 ```
 
-The same combined contracts would be updated with the latest versions of the CryptoTrophies contracts.
+# Behaviour
 
-# TODO:
+This library stores the migration version and deployed contract addresses in 'network config' JSON files.  A file is created for every deployed network under the `networks` directory.
 
-1. [-] Regular JSON files are no longer being generated.  Still call the old artifactor.
-2. [-] Old versions of contract abis are still being thrown away
+For example:
 
+```javascript
 
+// networks/3.json
 
+{
+  migrationVersion: 152323422,
+  contracts: [
+    {
+      contractName: 'CryptoDoggies',
+      address: '0x...'
+    }
+  ]
+}
+```
 
+Whenever `truffle-migrate-off-chain` is called, it will:
 
+1. Run any migrations that are new.
+2. Update the network config to the newest migration version and add any new contracts
+3. Update the Truffle contract build artifacts to point to the latest deployed contracts on the networks.
 
+The key here is that the Truffle build artifact network addresses are derived from the network configs; this allows you to persist the production config so that your continuous build server will build the front-end with the latest addresses.
 
-The front-end allows the dev to have the same contract deployed to any network.  The user can select the network, and the contract is able to determine which address the contract lives at.
+# Limitations
+
+- Different networks may have different versions of a contract's bytecode deployed.  However, they will all still be added to the same Truffle artifact.  This means that the address is not strictly tied to an ABI.  It's unlikely to be a problem but it's something to keep in mind.  This is really an existing issue, however.
+
+- Deploying a contract to the same network twice is not currently supported.  Networks are distinguished by their network_id rather than an alias, so you have to scope the 'latest' set of contracts by network.

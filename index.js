@@ -4,17 +4,20 @@ require('source-map-support/register')
 var Migrate = require('./lib/commands/migrate');
 var TaskError = require("truffle-core/lib/errors/taskerror");
 var TruffleError = require("truffle-error");
+var Command = require("truffle-core/lib/command");
 
 var options = {
   logger: console
 };
 
-Migrate.run(options, function (err) {
+var command = new Command(require("./lib/commands"));
+
+command.run(['migrate'].concat(process.argv.slice(1)), options, function (err) {
   if (err) {
     if (err instanceof TaskError) {
       command.args
-        .usage('Usage: truffle-saved-migrations [options]')
-        .epilog("See more at https://github.com/asselstine/truffle-saved-migrations")
+        .usage('Usage: truffle-migrate-off-chain [options]')
+        .epilog("See more at https://github.com/asselstine/truffle-migrate-off-chain")
         .showHelp();
     } else {
       if (err instanceof TruffleError) {
