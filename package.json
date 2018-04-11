@@ -1,6 +1,6 @@
 {
   "name": "truffle-migrate-off-chain",
-  "version": "0.1",
+  "version": "0.1.0",
   "description": "Off-chain migrations for Truffle",
   "main": "index.js",
   "scripts": {
