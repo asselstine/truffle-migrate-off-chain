@@ -1,6 +1,6 @@
 # Truffle Migrate: Off-chain
 
-This library acts as a drop-in replacement for Truffle's `migrate` command.  It stores the migration version and deployed contract addresses for each network in the local filesystem.  This means that development networks can added to .gitignore, and production deployments can be committed: allowing easier integration with continuous deployment processes.
+This library acts as a drop-in replacement for Truffle's `migrate` command.  It stores the migration version and deployed contract addresses for each network off-chain in the local filesystem.  This means that development networks can added to .gitignore, and production deployments can be committed: allowing easier integration with continuous deployment processes.
 
 # Setup
 
@@ -80,3 +80,7 @@ The key here is that the Truffle build artifact network addresses are derived fr
 - Different networks may have different versions of a contract's bytecode deployed.  However, they will all still be added to the same Truffle artifact.  This means that the address is not strictly tied to an ABI.  It's unlikely to be a problem but it's something to keep in mind.  This is really an existing issue, however.
 
 - Deploying a contract to the same network twice is not currently supported.  Networks are distinguished by their network_id rather than an alias, so you have to scope the 'latest' set of contracts by network.
+
+# License
+
+Note that this project borrows code heavily from `truffle-migrate` and `truffle-core`.  This code is similarly licensed under the MIT license.
