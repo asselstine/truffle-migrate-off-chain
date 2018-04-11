@@ -1,4 +1,4 @@
-# Truffle Saved Migrations
+# Truffle Migrate: Off-chain
 
 This library acts as a drop-in replacement for Truffle's `migrate` command.  It stores the migration version and deployed contract addresses for each network in the local filesystem.  This means that development networks can added to .gitignore, and production deployments can be committed: allowing easier integration with continuous deployment processes.
 
