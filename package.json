@@ -1,7 +1,7 @@
 {
   "name": "truffle-migrate-off-chain",
-  "version": "1.0.0",
-  "description": "Off-chain Solidity migrations and contract tracking for Truffle",
+  "version": "0.1",
+  "description": "Off-chain migrations for Truffle",
   "main": "index.js",
   "scripts": {
     "main": "node index.js"
