@@ -10,8 +10,6 @@ Install the library in an existing Truffle project:
 npm install --save-dev truffle-migrate-off-chain
 ```
 
-The `Migrations.sol` contract can be removed because it is no longer needed.
-
 # Usage
 
 To run your migrations call the command:
@@ -82,6 +80,8 @@ The key here is that the Truffle build artifact network addresses are derived fr
 - Deploying a contract to the same network twice is not currently supported.  Networks are distinguished by their network_id rather than an alias, so you have to scope the 'latest' set of contracts by network.
 
 - It's currently built against Truffle 4.1.5, but it's likely that it will work with older versions of Truffle as well.  If you want to test it and submit a PR that would be fantastic!
+
+- You still need to keep the `Migrations.sol` contract and migration around so that the `truffle test` command works.
 
 # License
 
