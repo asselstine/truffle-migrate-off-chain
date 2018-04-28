@@ -29,10 +29,10 @@
     "source-map-support": "^0.5.4",
     "truffle-config": "^1.0.4",
     "truffle-contract-schema": "^2.0.0",
-    "truffle-core": "^4.1.5",
+    "truffle-core": "^4.1.7",
     "truffle-error": "0.0.2",
     "truffle-expect": "0.0.3",
-    "truffle-resolver": "^4.0.2",
-    "truffle-workflow-compile": "^1.0.1"
+    "truffle-resolver": "^4.0.3",
+    "truffle-workflow-compile": "^1.0.3"
   }
 }
