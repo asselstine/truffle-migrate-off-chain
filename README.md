@@ -1,4 +1,6 @@
-# Truffle Migrate: Off-chain
+##### NOTE: This package has been deprecated in favour of [Truffle Deploy Registry](https://github.com/MedCredits/truffle-deploy-registry)
+
+# Truffle Migrate: Off-chain [DEPRECATED]
 
 This library acts as a drop-in replacement for Truffle's `migrate` command.  This command still runs the same migration files, but it stores the migration version and deployed contract addresses for each network off-chain in the local filesystem.  This means that development networks can added to .gitignore, and production deployments can be committed: allowing easier integration with continuous deployment processes.
 
